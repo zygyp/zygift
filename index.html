@@ -1,0 +1,655 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>金华市智予工艺品有限公司 - PVC软胶滴塑产品定制</title>
+    <meta name="description" content="金华市智予工艺品有限公司专业生产PVC软胶钥匙扣、公仔摆件、笔头、吸管套、冰箱贴、杯垫、杯套、卡通拉头、卡通胶章等滴塑产品，地址：浙江省金华市金东区孝顺镇孝源路28号，电话：13362993216">
+    <!-- 引入Tailwind CSS实现快速样式开发，减小体积 -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <!-- 引入Font Awesome图标 -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <!-- 自定义Tailwind配置 -->
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    colors: {
+                        primary: '#2563eb', // 主色调（蓝色，专业稳重）
+                        secondary: '#f59e0b', // 辅助色（橙色，醒目）
+                        neutral: '#f3f4f6', // 背景色
+                    },
+                    fontFamily: {
+                        sans: ['Inter', 'system-ui', 'sans-serif'],
+                    },
+                }
+            }
+        }
+    </script>
+    <!-- 自定义工具类 -->
+    <style type="text/tailwindcss">
+        @layer utilities {
+            .content-auto {
+                content-visibility: auto; /* 提升加载性能 */
+            }
+            .product-card {
+                @apply bg-white rounded-lg shadow-md hover:shadow-lg transition-shadow duration-300 overflow-hidden;
+            }
+            .contact-item {
+                @apply flex items-center gap-3 py-2 text-gray-700 hover:text-primary transition-colors;
+            }
+            .process-step {
+                @apply bg-white rounded-lg p-6 shadow-md text-center relative;
+            }
+            .process-line {
+                @apply hidden md:block absolute top-1/2 -right-4 w-8 h-1 bg-primary/30 -translate-y-1/2;
+            }
+            .process-step:last-child .process-line {
+                @apply hidden;
+            }
+        }
+    </style>
+    <style>
+        /* 基础样式优化，减少外部依赖 */
+        html {
+            scroll-behavior: smooth;
+        }
+        body {
+            font-family: 'Inter', sans-serif;
+        }
+        /* 图片懒加载过渡 */
+        img {
+            transition: opacity 0.5s ease;
+        }
+        img.lazy {
+            opacity: 0;
+        }
+        img.lazy.loaded {
+            opacity: 1;
+        }
+        /* 移动端流程线适配 */
+        @media (max-width: 768px) {
+            .process-step::after {
+                content: "";
+                display: block;
+                width: 40px;
+                height: 1px;
+                background-color: #2563eb4d;
+                margin: 1rem auto;
+            }
+            .process-step:last-child::after {
+                display: none;
+            }
+        }
+        /* 图片预览模态框样式 */
+        #imageModal {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(0, 0, 0, 0.8);
+            z-index: 1000;
+            align-items: center;
+            justify-content: center;
+            padding: 20px;
+        }
+        #modalContent {
+            max-width: 90%;
+            max-height: 90%;
+            position: relative;
+        }
+        #modalImage {
+            max-width: 100%;
+            max-height: 80vh;
+            border: 4px solid white;
+            border-radius: 4px;
+        }
+        #closeModal {
+            position: absolute;
+            top: -40px;
+            right: 0;
+            color: white;
+            font-size: 30px;
+            cursor: pointer;
+        }
+        .product-image-container {
+            cursor: zoom-in;
+        }
+    </style>
+</head>
+<body class="bg-neutral">
+    <!-- 导航栏 - 固定顶部，适配移动端 -->
+    <header class="sticky top-0 z-50 bg-white shadow-sm">
+        <div class="container mx-auto px-4 py-3 flex justify-between items-center">
+            <!-- 公司名称 -->
+            <a href="#" class="text-xl md:text-2xl font-bold text-primary">
+                智予工艺品
+            </a>
+            
+            <!-- 移动端菜单按钮 -->
+            <button id="menuBtn" class="md:hidden text-gray-700 focus:outline-none">
+                <i class="fas fa-bars text-xl"></i>
+            </button>
+            
+            <!-- 导航菜单 -->
+            <nav id="navMenu" class="hidden md:flex gap-6">
+                <a href="#home" class="text-gray-700 hover:text-primary transition-colors">首页</a>
+                <a href="#products" class="text-gray-700 hover:text-primary transition-colors">产品展示</a>
+                <a href="#process" class="text-gray-700 hover:text-primary transition-colors">下单流程</a>
+                <a href="#contact" class="text-gray-700 hover:text-primary transition-colors">联系我们</a>
+            </nav>
+        </div>
+        
+        <!-- 移动端下拉菜单 -->
+        <div id="mobileMenu" class="hidden md:hidden bg-white shadow-md px-4 py-2">
+            <a href="#home" class="block py-2 text-gray-700 hover:text-primary">首页</a>
+            <a href="#products" class="block py-2 text-gray-700 hover:text-primary">产品展示</a>
+            <a href="#process" class="block py-2 text-gray-700 hover:text-primary">下单流程</a>
+            <a href="#contact" class="block py-2 text-gray-700 hover:text-primary">联系我们</a>
+        </div>
+    </header>
+
+    <!-- 首页横幅 -->
+    <section id="home" class="bg-primary text-white py-16 md:py-24">
+        <div class="container mx-auto px-4">
+            <div class="max-w-3xl mx-auto text-center">
+                <h1 class="text-3xl md:text-4xl lg:text-5xl font-bold mb-6">
+                    PVC软胶滴塑礼品及文创品定制专家
+                </h1>
+                <p class="text-lg md:text-xl mb-8 opacity-90">
+                    专业生产公仔钥匙扣、笔头、吸管套、冰箱贴、杯垫杯套、行李牌等各类PVC软胶制品
+                </p>
+                <a href="#contact" class="inline-block bg-secondary text-white font-medium px-8 py-3 rounded-lg hover:bg-secondary/90 transition-colors">
+                    立即联系 <i class="fas fa-phone ml-2"></i>
+                </a>
+            </div>
+        </div>
+    </section>
+
+    <!-- 产品展示区 -->
+    <section id="products" class="py-16">
+        <div class="container mx-auto px-4">
+            <div class="text-center mb-12">
+                <h2 class="text-2xl md:text-3xl font-bold text-gray-800 mb-4">产品展示</h2>
+                <p class="text-gray-600 max-w-2xl mx-auto">
+                    我们提供全品类PVC软胶滴塑产品定制，工艺精湛，品质可靠
+                </p>
+            </div>
+
+            <!-- 产品网格 - 响应式布局，加载优化 -->
+            <div class="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6">
+                <!-- 产品卡片1 - 钥匙扣 -->
+                <div class="product-card content-auto">
+                    <div class="h-48 bg-gray-200 overflow-hidden product-image-container" data-img="images/yaoshikou.webp">
+                        <img src="images/yaoshikou.webp" alt="PVC软胶钥匙扣" class="w-full h-full object-cover lazy" loading="lazy">
+                    </div>
+                    <div class="p-4">
+                        <h3 class="font-semibold text-lg mb-2">钥匙扣</h3>
+                        <p class="text-gray-600 text-sm">PVC软胶材质，造型多样，支持定制</p>
+                    </div>
+                </div>
+
+                <!-- 产品卡片2 - 公仔摆件 -->
+                <div class="product-card content-auto">
+                    <div class="h-48 bg-gray-200 overflow-hidden product-image-container" data-img="images/baijian.webp">
+                        <img src="images/baijian.webp" alt="PVC软胶公仔摆件" class="w-full h-full object-cover lazy" loading="lazy">
+                    </div>
+                    <div class="p-4">
+                        <h3 class="font-semibold text-lg mb-2">公仔摆件</h3>
+                        <p class="text-gray-600 text-sm">立体造型，色彩丰富，环保材质</p>
+                    </div>
+                </div>
+
+                <!-- 产品卡片3 - 笔头 -->
+                <div class="product-card content-auto">
+                    <div class="h-48 bg-gray-200 overflow-hidden product-image-container" data-img="images/bitou.webp">
+                        <img src="images/bitou.webp" alt="PVC软胶笔头" class="w-full h-full object-cover lazy" loading="lazy">
+                    </div>
+                    <div class="p-4">
+                        <h3 class="font-semibold text-lg mb-2">笔头</h3>
+                        <p class="text-gray-600 text-sm">适配各类笔型，耐磨耐用</p>
+                    </div>
+                </div>
+
+                <!-- 产品卡片4 - 固体胶棒头 -->
+                <div class="product-card content-auto">
+                    <div class="h-48 bg-gray-200 overflow-hidden product-image-container" data-img="images/jiaobangtou.webp">
+                        <img src="images/jiaobangtou.webp" alt="PVC软胶固体胶棒头" class="w-full h-full object-cover lazy" loading="lazy">
+                    </div>
+                    <div class="p-4">
+                        <h3 class="font-semibold text-lg mb-2">固体胶棒头</h3>
+                        <p class="text-gray-600 text-sm">贴合紧密，使用便捷</p>
+                    </div>
+                </div>
+
+                <!-- 产品卡片5 - 文具贴片 -->
+                <div class="product-card content-auto">
+                    <div class="h-48 bg-gray-200 overflow-hidden product-image-container" data-img="images/wenjutiepian.webp">
+                        <img src="images/wenjutiepian.webp" alt="PVC软胶文具贴片" class="w-full h-full object-cover lazy" loading="lazy">
+                    </div>
+                    <div class="p-4">
+                        <h3 class="font-semibold text-lg mb-2">文具贴片</h3>
+                        <p class="text-gray-600 text-sm">装饰性强，粘性稳定</p>
+                    </div>
+                </div>
+
+                <!-- 产品卡片6 - 吸管套 -->
+                <div class="product-card content-auto">
+                    <div class="h-48 bg-gray-200 overflow-hidden product-image-container" data-img="images/xiguantao.webp">
+                        <img src="images/xiguantao.webp" alt="PVC软胶吸管套" class="w-full h-full object-cover lazy" loading="lazy">
+                    </div>
+                    <div class="p-4">
+                        <h3 class="font-semibold text-lg mb-2">吸管套</h3>
+                        <p class="text-gray-600 text-sm">食品级材质，安全环保</p>
+                    </div>
+                </div>
+
+                <!-- 产品卡片7 - 行李牌 -->
+                <div class="product-card content-auto">
+                    <div class="h-48 bg-gray-200 overflow-hidden product-image-container" data-img="images/xinglipai.webp">
+                        <img src="images/xinglipai.webp" alt="PVC软胶行李牌" class="w-full h-full object-cover lazy" loading="lazy">
+                    </div>
+                    <div class="p-4">
+                        <h3 class="font-semibold text-lg mb-2">行李牌</h3>
+                        <p class="text-gray-600 text-sm">防水耐磨，标识清晰</p>
+                    </div>
+                </div>
+
+                <!-- 产品卡片8 - 牙刷柄 -->
+                <div class="product-card content-auto">
+                    <div class="h-48 bg-gray-200 overflow-hidden product-image-container" data-img="images/yashuabing.webp">
+                        <img src="images/yashuabing.webp" alt="PVC软胶牙刷柄" class="w-full h-full object-cover lazy" loading="lazy">
+                    </div>
+                    <div class="p-4">
+                        <h3 class="font-semibold text-lg mb-2">牙刷柄</h3>
+                        <p class="text-gray-600 text-sm">防滑设计，手感舒适</p>
+                    </div>
+                </div>
+
+                <!-- 产品卡片9 - 勺子柄 -->
+                <div class="product-card content-auto">
+                    <div class="h-48 bg-gray-200 overflow-hidden product-image-container" data-img="images/shaozibing.webp">
+                        <img src="images/shaozibing.webp" alt="PVC软胶勺子柄" class="w-full h-full object-cover lazy" loading="lazy">
+                    </div>
+                    <div class="p-4">
+                        <h3 class="font-semibold text-lg mb-2">勺子柄</h3>
+                        <p class="text-gray-600 text-sm">耐高温，握感佳</p>
+                    </div>
+                </div>
+
+                <!-- 产品卡片10 - 镜子套 -->
+                <div class="product-card content-auto">
+                    <div class="h-48 bg-gray-200 overflow-hidden product-image-container" data-img="images/jingzitao.webp">
+                        <img src="images/jingzitao.webp" alt="PVC软胶镜子套" class="w-full h-full object-cover lazy" loading="lazy">
+                    </div>
+                    <div class="p-4">
+                        <h3 class="font-semibold text-lg mb-2">镜子套</h3>
+                        <p class="text-gray-600 text-sm">防刮耐磨，保护镜面</p>
+                    </div>
+                </div>
+
+                <!-- 产品卡片11 - 防撞贴 -->
+                <div class="product-card content-auto">
+                    <div class="h-48 bg-gray-200 overflow-hidden product-image-container" data-img="images/fangzhuangtie.webp">
+                        <img src="images/fangzhuangtie.webp" alt="PVC软胶防撞贴" class="w-full h-full object-cover lazy" loading="lazy">
+                    </div>
+                    <div class="p-4">
+                        <h3 class="font-semibold text-lg mb-2">防撞贴</h3>
+                        <p class="text-gray-600 text-sm">减震缓冲，粘性持久</p>
+                    </div>
+                </div>
+
+                <!-- 产品卡片12 - 冰箱贴 -->
+                <div class="product-card content-auto">
+                    <div class="h-48 bg-gray-200 overflow-hidden product-image-container" data-img="images/bingxiangtie.webp">
+                        <img src="images/bingxiangtie.webp" alt="PVC软胶冰箱贴" class="w-full h-full object-cover lazy" loading="lazy">
+                    </div>
+                    <div class="p-4">
+                        <h3 class="font-semibold text-lg mb-2">冰箱贴</h3>
+                        <p class="text-gray-600 text-sm">磁吸牢固，图案精美，防水防潮</p>
+                    </div>
+                </div>
+
+                <!-- 新增产品卡片13 - 杯垫 -->
+                <div class="product-card content-auto">
+                    <div class="h-48 bg-gray-200 overflow-hidden product-image-container" data-img="images/beidian.webp">
+                        <img src="images/beidian.webp" alt="PVC软胶杯垫" class="w-full h-full object-cover lazy" loading="lazy">
+                    </div>
+                    <div class="p-4">
+                        <h3 class="font-semibold text-lg mb-2">杯垫</h3>
+                        <p class="text-gray-600 text-sm">隔热防滑，易清洗，图案可定制</p>
+                    </div>
+                </div>
+
+                <!-- 新增产品卡片14 - 杯套 -->
+                <div class="product-card content-auto">
+                    <div class="h-48 bg-gray-200 overflow-hidden product-image-container" data-img="images/beitao.webp">
+                        <img src="images/beitao.webp" alt="PVC软胶杯套" class="w-full h-full object-cover lazy" loading="lazy">
+                    </div>
+                    <div class="p-4">
+                        <h3 class="font-semibold text-lg mb-2">杯套</h3>
+                        <p class="text-gray-600 text-sm">防烫防滑，贴合杯型，耐用环保</p>
+                    </div>
+                </div>
+
+                <!-- 新增产品卡片15 - 卡通拉头 -->
+                <div class="product-card content-auto">
+                    <div class="h-48 bg-gray-200 overflow-hidden product-image-container" data-img="images/latou.webp">
+                        <img src="images/latou.webp" alt="PVC软胶卡通拉头" class="w-full h-full object-cover lazy" loading="lazy">
+                    </div>
+                    <div class="p-4">
+                        <h3 class="font-semibold text-lg mb-2">卡通拉头</h3>
+                        <p class="text-gray-600 text-sm">造型可爱，适配拉链，不易断裂</p>
+                    </div>
+                </div>
+
+                <!-- 新增产品卡片16 - 卡通胶章 -->
+                <div class="product-card content-auto">
+                    <div class="h-48 bg-gray-200 overflow-hidden product-image-container" data-img="images/jiaozhang.webp">
+                        <img src="images/jiaozhang.webp" alt="PVC软胶卡通胶章" class="w-full h-full object-cover lazy" loading="lazy">
+                    </div>
+                    <div class="p-4">
+                        <h3 class="font-semibold text-lg mb-2">卡通胶章</h3>
+                        <p class="text-gray-600 text-sm">质感柔软，标识清晰，经久耐用</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- 下单流程区 -->
+    <section id="process" class="py-16 bg-white">
+        <div class="container mx-auto px-4">
+            <div class="text-center mb-12">
+                <h2 class="text-2xl md:text-3xl font-bold text-gray-800 mb-4">定制下单流程</h2>
+                <p class="text-gray-600 max-w-2xl mx-auto">
+                    简单5步，轻松定制您所需的PVC软胶滴塑产品，全程专业对接，品质保障
+                </p>
+            </div>
+
+            <!-- 流程步骤 - 响应式布局 -->
+            <div class="relative max-w-5xl mx-auto">
+                <div class="grid grid-cols-1 md:grid-cols-5 gap-4 md:gap-0">
+                    <!-- 步骤1：需求沟通 -->
+                    <div class="process-step">
+                        <div class="w-16 h-16 bg-primary/10 rounded-full flex items-center justify-center mx-auto mb-4">
+                            <i class="fas fa-comments text-primary text-2xl"></i>
+                        </div>
+                        <h3 class="font-semibold text-lg mb-2 text-gray-800">需求沟通</h3>
+                        <p class="text-gray-600 text-sm">
+                            提供产品规格、数量、设计稿等需求，我们一对一沟通定制细节
+                        </p>
+                        <div class="process-line"></div>
+                    </div>
+
+                    <!-- 步骤2：报价打样 -->
+                    <div class="process-step">
+                        <div class="w-16 h-16 bg-primary/10 rounded-full flex items-center justify-center mx-auto mb-4">
+                            <i class="fas fa-file-invoice-dollar text-primary text-2xl"></i>
+                        </div>
+                        <h3 class="font-semibold text-lg mb-2 text-gray-800">报价打样</h3>
+                        <p class="text-gray-600 text-sm">
+                            根据需求核算报价，确认后制作样品，支持样品修改至满意
+                        </p>
+                        <div class="process-line"></div>
+                    </div>
+
+                    <!-- 步骤3：确认订单 -->
+                    <div class="process-step">
+                        <div class="w-16 h-16 bg-primary/10 rounded-full flex items-center justify-center mx-auto mb-4">
+                            <i class="fas fa-file-signature text-primary text-2xl"></i>
+                        </div>
+                        <h3 class="font-semibold text-lg mb-2 text-gray-800">确认订单</h3>
+                        <p class="text-gray-600 text-sm">
+                            样品确认无误后，签订合同并支付定金，正式启动生产
+                        </p>
+                        <div class="process-line"></div>
+                    </div>
+
+                    <!-- 步骤4：生产制作 -->
+                    <div class="process-step">
+                        <div class="w-16 h-16 bg-primary/10 rounded-full flex items-center justify-center mx-auto mb-4">
+                            <i class="fas fa-industry text-primary text-2xl"></i>
+                        </div>
+                        <h3 class="font-semibold text-lg mb-2 text-gray-800">生产制作</h3>
+                        <p class="text-gray-600 text-sm">
+                            严格按照样品标准生产，全程品控，定期反馈生产进度
+                        </p>
+                        <div class="process-line"></div>
+                    </div>
+
+                    <!-- 步骤5：发货验收 -->
+                    <div class="process-step">
+                        <div class="w-16 h-16 bg-primary/10 rounded-full flex items-center justify-center mx-auto mb-4">
+                            <i class="fas fa-truck text-primary text-2xl"></i>
+                        </div>
+                        <h3 class="font-semibold text-lg mb-2 text-gray-800">发货验收</h3>
+                        <p class="text-gray-600 text-sm">
+                            生产完成后沟通发货，售后问题全程跟进解决
+                        </p>
+                    </div>
+                </div>
+            </div>
+
+            <!-- 流程说明 -->
+            <div class="max-w-3xl mx-auto mt-12 bg-neutral p-6 rounded-lg">
+                <h4 class="font-semibold text-lg mb-3 text-gray-800 flex items-center">
+                    <i class="fas fa-info-circle text-primary mr-2"></i>
+                    温馨提示
+                </h4>
+                <ul class="text-gray-600 space-y-2 text-sm">
+                    <li class="flex items-start gap-2">
+                        <i class="fas fa-check text-secondary mt-1"></i>
+                        <span>打样周期：常规产品3-5个工作日，复杂产品5-7个工作日</span>
+                    </li>
+                    <li class="flex items-start gap-2">
+                        <i class="fas fa-check text-secondary mt-1"></i>
+                        <span>生产周期：根据订单数量而定，常规订单7-15个工作日</span>
+                    </li>
+                    <li class="flex items-start gap-2">
+                        <i class="fas fa-check text-secondary mt-1"></i>
+                        <span>支持来图定制、来样定制，免费设计方案（需提供清晰素材）</span>
+                    </li>
+                    <li class="flex items-start gap-2">
+                        <i class="fas fa-check text-secondary mt-1"></i>
+                        <span>所有产品均采用环保PVC材质，符合相关检测标准</span>
+                    </li>
+                </ul>
+            </div>
+        </div>
+    </section>
+
+<!-- 联系我们 -->
+<section id="contact" class="py-16 bg-neutral">
+    <div class="container mx-auto px-4">
+        <div class="text-center mb-12">
+            <h2 class="text-2xl md:text-3xl font-bold text-gray-800 mb-4">联系我们</h2>
+            <p class="text-gray-600 max-w-2xl mx-auto">
+                欢迎咨询定制，我们将为您提供专业的产品解决方案
+            </p>
+        </div>
+
+        <!-- 合并为单栏布局 -->
+        <div class="max-w-2xl mx-auto bg-white p-6 md:p-8 rounded-lg shadow-md">
+            <div class="grid md:grid-cols-2 gap-8">
+                <!-- 联系信息 -->
+                <div>
+                    <h3 class="text-xl font-semibold mb-6 text-gray-800">联系方式</h3>
+                    
+                    <div class="contact-item">
+                        <i class="fas fa-building text-primary text-xl w-6 text-center"></i>
+                        <span>金华市智予工艺品有限公司</span>
+                    </div>
+                    
+                    <div class="contact-item">
+                        <i class="fas fa-map-marker-alt text-primary text-xl w-6 text-center"></i>
+                        <span>浙江省金华市金东区孝顺镇孝源路28号</span>
+                    </div>
+                    
+                    <div class="contact-item">
+                        <i class="fas fa-phone text-primary text-xl w-6 text-center"></i>
+                        <a href="tel:13362993216" class="hover:text-primary">13362993216</a>
+                    </div>
+                   
+                    <div class="contact-item">
+                        <i class="fas fa-envelope text-primary text-xl w-6 text-center"></i>
+                        <a href="mailto:zzg721@qq.com" class="hover:text-primary">zzg721@qq.com</a>
+                    </div>
+                    
+                    <!-- 微信二维码 - 修复路径分隔符 -->
+                    <div class="mt-8 flex items-center gap-4">
+                        <div class="w-24 h-24 bg-neutral p-2 rounded-lg shadow-sm">
+                            <img src="images/erweima.webp" alt="微信二维码" class="w-full h-full object-cover">
+                        </div>
+                        <div>
+                            <p class="text-sm text-gray-700 font-medium">微信咨询</p>
+                            <p class="text-xs text-gray-500">扫码添加，一对一沟通</p>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- 在线留言（跳转飞书表单） -->
+                <div>
+                    <h3 class="text-xl font-semibold mb-6 text-gray-800">在线留言</h3>
+                    <p class="text-gray-600 mb-4 text-sm">
+                        点击下方按钮，填写咨询信息，我们将尽快与您联系
+                    </p>
+                    
+                    <!-- 改为跳转飞书表单的链接按钮 -->
+                    <a href="https://qcnf5n59vszs.feishu.cn/share/base/form/shrcnov2ZhT3Lqh4vIr48PEHMFe" 
+                       target="_blank" 
+                       class="w-full inline-block text-center bg-primary text-white font-medium px-4 py-3 rounded-lg hover:bg-primary/90 transition-colors mb-4">
+                        前往留言 <i class="fas fa-paper-plane ml-2"></i>
+                    </a>
+                    
+                    <!-- 咨询表单说明 -->
+                    <div class="bg-neutral/50 p-4 rounded-lg text-sm text-gray-600">
+                        <p class="mb-2"><i class="fas fa-info-circle text-primary mr-1"></i> 咨询内容建议包含：</p>
+                        <ul class="list-disc pl-5 space-y-1">
+                            <li>所需产品类型</li>
+                            <li>大致数量</li>
+                            <li>定制要求</li>
+                            <li>期望交货时间</li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+    <!-- 图片预览模态框 -->
+    <div id="imageModal">
+        <div id="modalContent">
+            <span id="closeModal">&times;</span>
+            <img id="modalImage" src="" alt="产品大图">
+        </div>
+    </div>
+
+    <!-- 页脚 -->
+    <footer class="bg-gray-800 text-white py-8">
+        <div class="container mx-auto px-4">
+            <div class="text-center">
+                <p class="mb-4">© 2025 金华市智予工艺品有限公司 版权所有</p>
+                <p class="text-gray-400 text-sm">
+                    地址：浙江省金华市金东区孝顺镇孝源路28号 | 联系电话：13362993216 | 邮箱：zzg721@qq.com
+                </p>
+            </div>
+        </div>
+   </footer>
+
+    <!-- JavaScript - 统一封装到DOMContentLoaded，优化执行时机 -->
+    <script>
+        document.addEventListener('DOMContentLoaded', () => {
+            // 移动端菜单切换
+            const menuBtn = document.getElementById('menuBtn');
+            const mobileMenu = document.getElementById('mobileMenu');
+            
+            menuBtn.addEventListener('click', () => {
+                mobileMenu.classList.toggle('hidden');
+            });
+
+            // 图片懒加载
+            const lazyImages = document.querySelectorAll('img.lazy');
+            
+            if ('IntersectionObserver' in window) {
+                const imageObserver = new IntersectionObserver((entries, observer) => {
+                    entries.forEach(entry => {
+                        if (entry.isIntersecting) {
+                            const image = entry.target;
+                            image.classList.add('loaded');
+                            observer.unobserve(image);
+                        }
+                    });
+                });
+                
+                lazyImages.forEach(image => {
+                    imageObserver.observe(image);
+                });
+            } else {
+                // 降级处理
+                lazyImages.forEach(image => {
+                    image.classList.add('loaded');
+                });
+            }
+
+            // 图片预览功能
+            const modal = document.getElementById('imageModal');
+            const modalImg = document.getElementById('modalImage');
+            const closeBtn = document.getElementById('closeModal');
+            const imageContainers = document.querySelectorAll('.product-image-container');
+
+            // 打开模态框并显示相应图片
+            imageContainers.forEach(container => {
+                container.addEventListener('click', () => {
+                    const imgSrc = container.getAttribute('data-img');
+                    modalImg.src = imgSrc;
+                    modal.style.display = 'flex';
+                    document.body.style.overflow = 'hidden'; // 防止背景滚动
+                });
+            });
+
+            // 关闭模态框
+            closeBtn.addEventListener('click', () => {
+                modal.style.display = 'none';
+                document.body.style.overflow = 'auto'; // 恢复背景滚动
+            });
+
+            // 点击模态框外部关闭
+            modal.addEventListener('click', (e) => {
+                if (e.target === modal) {
+                    modal.style.display = 'none';
+                    document.body.style.overflow = 'auto';
+                }
+            });
+
+            // 平滑滚动 - 增加兼容性处理
+            document.querySelectorAll('a[href^="#"]').forEach(anchor => {
+                anchor.addEventListener('click', function (e) {
+                    e.preventDefault();
+                    const targetId = this.getAttribute('href');
+                    const targetElement = document.querySelector(targetId);
+                    
+                    if (targetElement) {
+                        // 兼容smooth滚动属性
+                        if ('scrollBehavior' in document.documentElement.style) {
+                            window.scrollTo({
+                                top: targetElement.offsetTop - 80,
+                                behavior: 'smooth'
+                            });
+                        } else {
+                            targetElement.scrollIntoView({ block: 'start' });
+                            window.scrollBy(0, -80);
+                        }
+                        
+                        // 关闭移动端菜单
+                        mobileMenu.classList.add('hidden');
+                    }
+                });
+            });
+        });
+    </script>
+</body>
+</html>
